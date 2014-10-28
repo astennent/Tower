@@ -42,7 +42,8 @@ public class Tower : MonoBehaviour {
 			return;
 		}
 
-		Bullet.Instantiate(bulletSpeed, transform.position, target);
+		Vector3 bulletPositionAdjust = 1 * Vector3.up;
+		Bullet.Instantiate(bulletSpeed, transform.position + bulletPositionAdjust, target);
 		lastShotTime = Time.time;
 	}
 

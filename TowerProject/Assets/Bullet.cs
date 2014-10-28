@@ -8,6 +8,11 @@ public class Bullet : MonoBehaviour {
 	public float lifespan;
 	public float startTime;
 
+	private bool isDead = false;
+	private float deathTime = -1;
+
+	private ParticleEmitter emitter;
+
 	public static Bullet Instantiate(float bulletSpeed, Vector3 _origin, Transform _target) {
 		Bullet bullet = (Bullet)GameObject.Instantiate(BulletController.s_bulletPrefab, _origin, _target.rotation);
 		bullet.origin = _origin;
@@ -20,13 +25,20 @@ public class Bullet : MonoBehaviour {
 		return bullet;
 	}
 
+	void Start() {
+		emitter = gameObject.GetComponent<ParticleEmitter>();
+	}
+
 	void Update() {
-		handleMovement();
-		handleImpact();
+		if (isDead) {
+			handleDeath();
+		} else {
+			handleMovement();
+			handleImpact();
+		}
 	}
 
 	void handleMovement() {
-		print(lifespan);
 		float progress = (Time.time - startTime) / lifespan;
 		Vector3 movement =  (target.position - origin) * progress;
 		transform.position = origin + movement;
@@ -38,7 +50,18 @@ public class Bullet : MonoBehaviour {
 		}
 	}
 
+	void handleDeath() {
+		float timeBetweenDeathAndDestruction = emitter.maxEnergy;
+		print(timeBetweenDeathAndDestruction);
+		if (Time.time - deathTime > timeBetweenDeathAndDestruction) {
+			Destroy(gameObject);
+		}
+	}
+
 	void impact() {
-		Destroy(gameObject);
+		isDead = true;
+		deathTime = Time.time;
+		emitter.minEmission = 0;
+		emitter.maxEmission = 0;
 	}
 }
