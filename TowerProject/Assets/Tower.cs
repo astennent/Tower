@@ -8,6 +8,7 @@ public class Tower : MonoBehaviour {
 
 	float timeBetweenShots = 2f;
 	float bulletSpeed = 4f;
+	float range = 3.5f;
 	float lastShotTime;
 
 	public static Tower Instantiate(int xPosition, int zPosition) {
@@ -27,7 +28,26 @@ public class Tower : MonoBehaviour {
 	}
 
 	Transform findTarget() {
-		return GameObject.FindGameObjectsWithTag("PracticeTarget")[0].transform;
+		Transform target = GameObject.FindGameObjectsWithTag("PracticeTarget")[0].transform;
+		bool isValidTarget = (isInRange(target) && isInLOS(target));
+		if (isValidTarget) {
+			return target;
+		}
+		return null;
+	}
+
+	bool isInRange(Transform target) {
+		float dist = Vector3.Distance(target.position, transform.position);
+		return (dist <= range);
+	}
+
+	bool isInLOS(Transform target) {
+		RaycastHit hit;
+		Vector3 direction = target.transform.position - transform.position;
+		if (Physics.Raycast(transform.position, direction.normalized, out hit)) {
+			return (hit.collider.transform == target);
+		}
+		return false;
 	}
 
 	void handleFiring() {
