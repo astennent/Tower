@@ -5,16 +5,6 @@ public class SelectionController : MonoBehaviour {
 
 	private static Tower selectedTower;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
-
 	public static void OnClickCell(int x, int z) {
 		Debug.Log(x + "  " + z);
 	}
